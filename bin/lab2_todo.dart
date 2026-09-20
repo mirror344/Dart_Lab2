@@ -12,7 +12,7 @@ void printMenu() {
 }
 
 void addTodo(List<Todo> todos) {
-  stdout.write('Название задачи:');
+  stdout.write('Название задачи: ');
   String? input = stdin.readLineSync();
 
   if (input == null || input.trim().isEmpty) {
@@ -36,15 +36,72 @@ void listTodos(List<Todo> todos) {
 }
 
 void completeTodo(List<Todo> todos) {
-  
+  stdout.write('ID задачи: ');
+  String? input = stdin.readLineSync();
+
+  if (input == null) return;
+  int? id = int.tryParse(input.trim());
+
+  if (id == null) {
+    print('Ошибка: введите число');
+    return;
+  }
+
+  for (var todo in todos) {
+    if (todo.id == id) {
+      todo.complete();
+      print('Задача отмечена выполненной!');
+      return;
+    }
+  }
+
+  print('Задача с ID $id не найдена');
 }
 
+void deleteTodo(List<Todo> todos) {
+  stdout.write('ID задачи: ');
+  String? input = stdin.readLineSync();
 
+  if (input == null) return;
+
+  int? id = int.tryParse(input.trim());
+  if (id == null) {
+    print('Ошибка: введите число');
+    return;
+  }
+
+  for (int i = 0; i < todos.length; i++) {
+    if (todos[i].id == id) {
+      todos.removeAt(i);
+      print('Задача удалена!');
+      return;
+    }
+  }
+
+  print('Задача с ID $id не найдена');
+}
 
 void main(List<String> arguments) {
-  stdout.write('Введите что-нибудь');
-  String? input = stdin.readLineSync();
-  print('Вы ввели: $input');
+  // stdout.encoding = systemEncoding;
+
+  List<Todo> todos = [];
+  printMenu();
+
+  while (true) {
+    stdout.write('> ');
+    String? input = stdin.readLineSync();
+    if (input == null) continue;
+    String command = input.trim().toLowerCase();
+    if (command.isEmpty) continue;
+    switch (command) {
+      case 'add': addTodo(todos); break;
+      case 'list': listTodos(todos); break;
+      case 'done': completeTodo(todos); break;
+      case 'delete': deleteTodo(todos); break;
+      case 'exit': print('До свидания!'); return;
+      default: printMenu(); print('Неизвестная команда');
+    }
+  }
 
 }
 
